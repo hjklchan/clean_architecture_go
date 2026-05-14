@@ -10,13 +10,22 @@ import (
 )
 
 func main() {
+	// Repository Instance
+	repository := mockUserRepository{}
+	// Presenter Instance
+	presenter := GetUserByIdApiPresenter{}
+
 	// Example for GetUserInfoById
 	interactor := get_user_by_id.NewGetUserByIdInteractor(
-		mockUserRepository{},
-		GetUserByIdApiPresenter{},
+		repository,
+		presenter,
 	)
 
-	interactor.Invoke(context.Background(), get_user_by_id.Input{ID: uuid.New()})
+	err := interactor.Invoke(context.Background(), get_user_by_id.Input{ID: uuid.New()})
+	if err != nil {
+		fmt.Println("system error:", err)
+		return
+	}
 }
 
 type mockUserRepository struct{}
@@ -35,15 +44,27 @@ func (mockUserRepository) Save(context.Context, *entity.User) error {
 	return nil
 }
 
+type Response struct {
+	ID    string
+	Name  string
+	Email string
+}
+
 // Implements output port
-type GetUserByIdApiPresenter struct{}
+type GetUserByIdApiPresenter struct {
+	ViewModel interface{}
+}
 
 func (p GetUserByIdApiPresenter) Present(output get_user_by_id.Output) error {
+	fmt.Println("GetUserByIdApiPresenter.Present")
+	fmt.Printf("Get the result which find the user by id: %#v\n", output)
+
 	return nil
 }
 
-func (p GetUserByIdApiPresenter) HandleError(error) error {
-	fmt.Println("business error")
+func (p GetUserByIdApiPresenter) HandleError(err error) error {
+	fmt.Println("GetUserByIdApiPresenter.HandleError")
+	fmt.Println("business error:", err)
 
 	return nil
 }
