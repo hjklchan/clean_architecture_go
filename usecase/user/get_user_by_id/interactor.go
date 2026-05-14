@@ -19,11 +19,10 @@ func NewGetUserByIdInteractor(repo repository.UserRepository, outputPort OutputP
 	}
 }
 
-func (uc *GetUserByIdInteractor) Invoke(ctx context.Context, input Input) {
+func (uc *GetUserByIdInteractor) Invoke(ctx context.Context, input Input) error {
 	ent, err := uc.repo.GetByID(ctx, input.ID)
 	if err != nil {
-		uc.outputPort.HandleError(err)
-		return
+		return uc.outputPort.HandleError(err)
 	}
 
 	// Convert Entity to Output data.
@@ -34,5 +33,5 @@ func (uc *GetUserByIdInteractor) Invoke(ctx context.Context, input Input) {
 	}
 
 	// Call the present
-	uc.outputPort.Present(output)
+	return uc.outputPort.Present(output)
 }
