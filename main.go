@@ -5,13 +5,13 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"practices.com/clean_arch_go/entity"
+	"practices.com/clean_arch_go/infrastructure/repository/user"
 	"practices.com/clean_arch_go/usecase/user/get_user_by_id"
 )
 
 func main() {
 	// Repository Instance
-	repository := mockUserRepository{}
+	repository := user.MockUserRepository{}
 	// Presenter Instance
 	presenter := GetUserByIdApiPresenter{}
 
@@ -28,22 +28,6 @@ func main() {
 	}
 }
 
-type mockUserRepository struct{}
-
-func (mockUserRepository) GetByID(ctx context.Context, id uuid.UUID) (*entity.User, error) {
-	user := &entity.User{
-		ID:    id,
-		Name:  "Lucas Chen",
-		Email: "lucas.chen@example.com",
-	}
-
-	return user, nil
-}
-
-func (mockUserRepository) Save(context.Context, *entity.User) error {
-	return nil
-}
-
 type Response struct {
 	ID    string
 	Name  string
@@ -52,17 +36,19 @@ type Response struct {
 
 // Implements output port
 type GetUserByIdApiPresenter struct {
-	ViewModel interface{}
+	ViewModel any
 }
 
-func (p GetUserByIdApiPresenter) Present(output get_user_by_id.Output) error {
+func (p *GetUserByIdApiPresenter) Present(output get_user_by_id.Output) error {
 	fmt.Println("GetUserByIdApiPresenter.Present")
 	fmt.Printf("Get the result which find the user by id: %#v\n", output)
+
+	p.ViewModel = ""
 
 	return nil
 }
 
-func (p GetUserByIdApiPresenter) HandleError(err error) error {
+func (p *GetUserByIdApiPresenter) HandleError(err error) error {
 	fmt.Println("GetUserByIdApiPresenter.HandleError")
 	fmt.Println("business error:", err)
 
