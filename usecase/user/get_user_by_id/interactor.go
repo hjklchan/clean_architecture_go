@@ -3,16 +3,16 @@ package get_user_by_id
 import (
 	"context"
 
-	"practices.com/clean_arch_go/interface/repository"
+	"practices.com/clean_arch_go/domain/user"
 )
 
 type GetUserByIdInteractor struct {
 	outputPort OutputPort
 
-	repo repository.UserRepository
+	repo user.UserRepository
 }
 
-func NewGetUserByIdInteractor(repo repository.UserRepository, outputPort OutputPort) *GetUserByIdInteractor {
+func NewGetUserByIdInteractor(repo user.UserRepository, outputPort OutputPort) *GetUserByIdInteractor {
 	return &GetUserByIdInteractor{
 		outputPort,
 		repo,
