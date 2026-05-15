@@ -1,18 +1,37 @@
 package user
 
-import "github.com/google/uuid"
+import (
+	"time"
+
+	"github.com/google/uuid"
+	"practices.com/clean_arch_go/domain/user/value_object"
+)
 
 // Simple user entity
 type User struct {
-	ID    uuid.UUID
-	Name  string
-	Email string
+	ID               uuid.UUID
+	Name             string
+	Email            string
+	Password         value_object.Password
+	PasswordExpiryAt value_object.PasswordExpiryAt
 }
 
-func NewUser(name, email string) *User {
+func NewUser(name, email string, password value_object.Password, expiryDuration time.Duration) *User {
+	passwordExpiryAt := time.Now().Add(expiryDuration)
+
 	return &User{
-		ID:    uuid.New(),
-		Name:  name,
-		Email: email,
+		ID:               uuid.New(),
+		Name:             name,
+		Email:            email,
+		Password:         password,
+		PasswordExpiryAt: value_object.NewPasswordExpiryAtFromTime(passwordExpiryAt),
 	}
+}
+
+func (u *User) ResetPassword(value value_object.Password) {
+	u.Password = value
+}
+
+func (u *User) CanLogin() bool {
+	return !u.PasswordExpiryAt.IsExpired()
 }
