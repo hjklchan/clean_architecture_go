@@ -2,7 +2,7 @@ package value_object
 
 type PasswordHasher interface {
 	Hash(string) (string, error)
-	Compare(plainText, hashedText string) bool
+	Compare(plainText, hashedText string) (bool, error)
 }
 
 type Password struct {
@@ -26,7 +26,7 @@ func NewPasswordFromPlainText(value string, hasher PasswordHasher) (*Password, e
 	}, nil
 }
 
-func (p *Password) IsMatch(plainText string, hasher PasswordHasher) bool {
+func (p *Password) IsMatch(plainText string, hasher PasswordHasher) (bool, error) {
 	return hasher.Compare(plainText, p.hash)
 }
 
