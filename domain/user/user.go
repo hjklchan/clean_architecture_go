@@ -12,6 +12,7 @@ type User struct {
 	ID               uuid.UUID
 	Name             string
 	Email            string
+	Status           int
 	DateOfBirth      value_object.DateOfBirth
 	Password         value_object.Password
 	PasswordExpiryAt value_object.PasswordExpiryAt
@@ -34,6 +35,14 @@ func NewUser(
 		Password:         password,
 		PasswordExpiryAt: value_object.NewPasswordExpiryAtFromTime(passwordExpiryAt),
 	}
+}
+
+func (u *User) ChangeName(value string) {
+	u.Name = value
+}
+
+func (u *User) ChangeEmail(value string) {
+	u.Email = value
 }
 
 func (u *User) ResetPassword(value value_object.Password) {
