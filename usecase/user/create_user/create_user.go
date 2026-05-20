@@ -33,7 +33,10 @@ func (uc *CreateUserUseCase) Invoke(ctx context.Context, in Input) error {
 	}
 
 	const expiryDur = time.Hour * 24
-	ent := user.NewUser(in.Name, in.Email, *p, expiryDur)
+
+	dateOfBirth := value_object.NewDateOfBirth(in.DateOfBirth)
+
+	ent := user.NewUser(in.Name, in.Email, dateOfBirth, *p, expiryDur)
 
 	return uc.repo.Save(ctx, ent)
 }

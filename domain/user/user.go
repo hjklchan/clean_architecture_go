@@ -12,17 +12,25 @@ type User struct {
 	ID               uuid.UUID
 	Name             string
 	Email            string
+	DateOfBirth      value_object.DateOfBirth
 	Password         value_object.Password
 	PasswordExpiryAt value_object.PasswordExpiryAt
 }
 
-func NewUser(name, email string, password value_object.Password, expiryDuration time.Duration) *User {
+func NewUser(
+	name,
+	email string,
+	dateOfBirth value_object.DateOfBirth,
+	password value_object.Password,
+	expiryDuration time.Duration,
+) *User {
 	passwordExpiryAt := time.Now().Add(expiryDuration)
 
 	return &User{
 		ID:               uuid.New(),
 		Name:             name,
 		Email:            email,
+		DateOfBirth:      dateOfBirth,
 		Password:         password,
 		PasswordExpiryAt: value_object.NewPasswordExpiryAtFromTime(passwordExpiryAt),
 	}
