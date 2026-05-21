@@ -2,6 +2,7 @@ package aggregate
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/google/uuid"
 	"practices.com/clean_arch_go/entity"
@@ -61,6 +62,7 @@ func NewProduct(name, description string, price float64) (Product, error) {
 	}, nil
 }
 
+// 获取聚合根 Item 的 Id
 func (p *Product) GetId() uuid.UUID {
 	return p.item.ID
 }
@@ -71,4 +73,8 @@ func (p *Product) GetItem() *entity.Item {
 
 func (p *Product) GetPrice() float64 {
 	return p.price
+}
+
+func (p *Product) Display() string {
+	return fmt.Sprintf("%s\t\t|%s\t\t|%f", p.GetItem().Name, p.GetItem().Description, p.GetPrice())
 }

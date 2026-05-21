@@ -4,20 +4,30 @@ import (
 	"fmt"
 
 	"practices.com/clean_arch_go/aggregate"
+	"practices.com/clean_arch_go/infrastructure/repository/product"
 )
 
 func main() {
-	customer1, err := aggregate.NewCustomer("Lucas")
-	if err != nil {
-		fmt.Println("created customer1 err:", err)
-		return
-	}
-	fmt.Printf("%#v\n", customer1)
+	repo := product.NewProductMemoryRepository()
 
-	customer2, err := aggregate.NewCustomer("")
+	newProduct, err := aggregate.NewProduct("Lucas", "Lucas.Chen", 339.98)
 	if err != nil {
-		fmt.Println("created customer2 err:", err)
+		fmt.Println("new product err:", err)
 		return
 	}
-	fmt.Printf("%#v\n", customer2)
+	err = repo.Create(newProduct)
+	if err != nil {
+		fmt.Println("create product err:", err)
+		return
+	}
+
+	products, err := repo.GetAll()
+	if err != nil {
+		fmt.Println("create product err:", err)
+		return
+	}
+
+	for _, product := range products {
+		fmt.Println(product.Display())
+	}
 }
