@@ -27,9 +27,9 @@ func (uc *GetUserByIdInteractor) Invoke(ctx context.Context, input Input) error 
 
 	// Convert Entity to Output data.
 	output := Output{
-		ID:    ent.ID.String(),
-		Name:  ent.Name,
-		Email: ent.Email,
+		ID:    ent.GetStringId(),
+		Name:  ent.GetName(),
+		Email: ent.GetEmail(),
 	}
 
 	// Call the present

@@ -38,5 +38,5 @@ func (uc *CreateUserUseCase) Invoke(ctx context.Context, in Input) error {
 
 	ent := user.NewUser(in.Name, in.Email, dateOfBirth, *p, expiryDur)
 
-	return uc.repo.Save(ctx, ent)
+	return uc.repo.Save(ctx, *ent)
 }

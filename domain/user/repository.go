@@ -7,7 +7,7 @@ import (
 )
 
 type UserRepository interface {
-	GetByID(context.Context, uuid.UUID) (*User, error)
-	Save(context.Context, *User) error
+	GetByID(context.Context, uuid.UUID) (User, error)
+	Save(context.Context, User) error
 	// more
 }
