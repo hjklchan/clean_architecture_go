@@ -1,5 +1,7 @@
 package value_object
 
+import "errors"
+
 type PasswordHasher interface {
 	Hash(string) (string, error)
 	Compare(plainText, hashedText string) (bool, error)
@@ -16,6 +18,11 @@ func NewPasswordFromHash(hash string) *Password {
 }
 
 func NewPasswordFromPlainText(value string, hasher PasswordHasher) (*Password, error) {
+	len := len(value)
+	if len < 8 {
+		return nil, errors.New("the password must be at least 8 characters long")
+	}
+
 	hashed, err := hasher.Hash(value)
 	if err != nil {
 		return nil, err
