@@ -12,9 +12,10 @@ type Money struct {
 }
 
 var (
-	ErrEmptyUnit     = errors.New("currency can't be empty")
-	ErrNegativeValue = errors.New("amount can't be negative")
-	ErrUnitMismatch  = errors.New("currency don't match to target's")
+	ErrEmptyUnit         = errors.New("currency can't be empty")
+	ErrNegativeValue     = errors.New("amount can't be negative")
+	ErrCurrencyMismatch  = errors.New("currency don't match to target's")
+	ErrInsufficientFunds = errors.New("insufficient funds")
 )
 
 func NewMoney(currency string, amount float64) (Money, error) {
@@ -28,6 +29,33 @@ func NewMoney(currency string, amount float64) (Money, error) {
 	return Money{
 		currency: currency,
 		amount:   amount,
+	}, nil
+}
+
+// Deposit 充值金额
+func (m Money) Deposit(value Money) (Money, error) {
+	if m.currency != value.currency {
+		return Money{}, ErrCurrencyMismatch
+	}
+
+	return Money{
+		currency: m.currency,
+		amount:   m.amount + value.amount,
+	}, nil
+}
+
+// Withdraw 提现金额
+func (m Money) Withdraw(value Money) (Money, error) {
+	if m.Currency() != value.Currency() {
+		return Money{}, ErrCurrencyMismatch
+	}
+	if m.Amount() < value.Amount() {
+		return Money{}, ErrInsufficientFunds
+	}
+
+	return Money{
+		currency: m.Currency(),
+		amount:   m.Amount() - value.Amount(),
 	}, nil
 }
 
@@ -45,7 +73,7 @@ func (m Money) Text() string {
 
 func (m Money) Gap(target Money) (float64, error) {
 	if m.Currency() != target.Currency() {
-		return math.NaN(), ErrUnitMismatch
+		return math.NaN(), ErrCurrencyMismatch
 	}
 
 	return math.Abs(target.Amount() - m.Amount()), nil
