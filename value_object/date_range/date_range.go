@@ -13,6 +13,8 @@ type DateRange struct {
 var ErrInvalidDate = errors.New("invalid time")
 var ErrMismatchTimezone = errors.New("timezones mismatch")
 var ErrInvalidDateRange = errors.New("invalid date range params")
+var ErrInvalidDuration = errors.New("invalid duration param")
+var ErrUnsupportedDurationType = errors.New("unsupport duration type")
 
 func NewDateRange(start, end time.Time) (DateRange, error) {
 	if start.IsZero() || end.IsZero() {
@@ -38,6 +40,16 @@ func NewDateRange(start, end time.Time) (DateRange, error) {
 		start: start,
 		end:   end,
 	}, nil
+}
+
+func FromNowUtil(zone string, dur time.Duration) (DateRange, error) {
+	if dur <= 0 {
+		return DateRange{}, ErrInvalidDuration
+	}
+
+	end := time.Now().Add(dur)
+
+	return NewDateRange(time.Now(), end)
 }
 
 // WithinRange 检查目标区间 target 是否在区间内
